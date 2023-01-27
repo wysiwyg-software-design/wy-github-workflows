@@ -1,0 +1,74 @@
+name: Build docker image
+
+on:
+  workflow_call:
+    inputs:
+      artifact:
+        type: string
+        default: build
+        description: Name of the artifact to download & deploy
+      tags:
+        required: true
+        type: string
+        description: Tags for docker image
+      platforms:
+        type: string
+        default: linux/amd64
+        description: Platforms for docker image
+      dockerfile:
+        type: string
+        default: ./.docker/Dockerfile
+        description: Dockerfile to use
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: all
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        id: buildx
+        with:
+          install: true
+
+      - name: Login to Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        if: ${{ inputs.artifact == '' }}
+
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        if: ${{ inputs.artifact != '' }}
+        with:
+          name: ${{ inputs.artifact }}
+
+      - name: Unpack artifact
+        if: ${{ inputs.artifact != '' }}
+        run: tar -xvf ${{ inputs.artifact }}.tar
+
+      - name: Build Image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ${{ inputs.dockerfile }}
+          push: true
+          tags: ${{ inputs.tags }}
+          platforms: ${{ inputs.platforms }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          
+      - name: Delete artifact
+        if: ${{ inputs.artifact != '' }}
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: ${{ inputs.artifact }}
