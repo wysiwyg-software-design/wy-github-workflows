@@ -11,7 +11,7 @@ on:
       upload:
         required: false
         description: Define which files should be uploaded
-        default: .docker bin DistributionPackages Data Packages Web composer.json composer.lock flow
+        default: .docker bin Configuration DistributionPackages Data Packages Web composer.json composer.lock flow
         type: string
 
 jobs:
