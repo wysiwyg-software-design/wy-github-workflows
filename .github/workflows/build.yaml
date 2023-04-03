@@ -5,7 +5,7 @@ on:
     secrets:
       COMPOSER_AUTH_COMMAND:
         required: false
-      COMPOSER_AUTH:
+      COMPOSER_GITHUB_TOKEN:
         required: false
     inputs:
       upload:
@@ -18,7 +18,7 @@ jobs:
   website:
     env:
       COMPOSER_AUTH_COMMAND: ${{secrets.COMPOSER_AUTH_COMMAND}}
-      COMPOSER_AUTH: ${{secrets.GITHUB_TOKEN}}
+      COMPOSER_GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
     runs-on: ubuntu-latest
     steps:
       - name: Install jq
@@ -57,12 +57,12 @@ jobs:
           extensions: mbstring, intl
 
       - name: Configure composer authentication
-        if: ${{ env.COMPOSER_AUTH_COMMAND }} && ${{ env.COMPOSER_AUTH }}
-        run: composer config ${{ env.COMPOSER_AUTH_COMMAND }} ${{ env.COMPOSER_AUTH }}
+        if: ${{ env.COMPOSER_AUTH_COMMAND }} && ${{ env.COMPOSER_GITHUB_TOKEN }}
+        run: composer config ${{ env.COMPOSER_AUTH_COMMAND }} ${{ env.COMPOSER_GITHUB_TOKEN }}
         
       - name: Save auth.json
         id: auth_json
-        if: ${{ env.COMPOSER_AUTH_COMMAND }} && ${{ env.COMPOSER_AUTH }}
+        if: ${{ env.COMPOSER_AUTH_COMMAND }} && ${{ env.COMPOSER_GITHUB_TOKEN }}
         run: echo "output=auth.json" >> $GITHUB_OUTPUT
 
       - name: Get composer cache directory
