@@ -18,7 +18,7 @@ jobs:
   website:
     env:
       COMPOSER_AUTH_COMMAND: ${{secrets.COMPOSER_AUTH_COMMAND}}
-      COMPOSER_AUTH: ${{secrets.COMPOSER_AUTH}}
+      COMPOSER_AUTH: ${{secrets.GITHUB_TOKEN}}
     runs-on: ubuntu-latest
     steps:
       - name: Install jq
