@@ -58,7 +58,7 @@ jobs:
 
       - name: Configure composer authentication
         if: ${{ env.COMPOSER_AUTH_COMMAND }} && ${{ env.COMPOSER_AUTH }}
-        run: composer config ${{ env.COMPOSER_AUTH_COMMAND }}
+        run: composer config ${{ env.COMPOSER_AUTH_COMMAND }} ${{ env.COMPOSER_AUTH }}
         
       - name: Save auth.json
         id: auth_json
