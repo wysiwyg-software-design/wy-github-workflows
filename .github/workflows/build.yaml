@@ -7,6 +7,8 @@ on:
         required: false
       COMPOSER_GITHUB_TOKEN:
         required: false
+      REPO_DEPLOY_KEY:
+        required: true
     inputs:
       upload:
         required: false
