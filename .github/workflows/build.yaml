@@ -3,12 +3,14 @@ name: Build website
 on:
   workflow_call:
     secrets:
-      COMPOSER_AUTH_COMMAND:
-        required: false
-      COMPOSER_GITHUB_TOKEN:
-        required: false
-      REPO_DEPLOY_KEY:
+      COMPOSER_AUTH:
         required: true
+#      COMPOSER_AUTH_COMMAND:
+#        required: false
+#      COMPOSER_GITHUB_TOKEN:
+#        required: false
+#      REPO_DEPLOY_KEY:
+#        required: true
     inputs:
       upload:
         required: false
@@ -19,8 +21,8 @@ on:
 jobs:
   website:
     env:
-      COMPOSER_AUTH_COMMAND: ${{secrets.COMPOSER_AUTH_COMMAND}}
-      COMPOSER_GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+#      COMPOSER_AUTH_COMMAND: ${{secrets.COMPOSER_AUTH_COMMAND}}
+#      COMPOSER_GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       # Uses the global organization secret secrets.COMPOSER_AUTH with genereted 'personal access token'
       # https://james.brooks.page/blog/installing-private-repositories-using-github-actions
@@ -67,14 +69,14 @@ jobs:
           tools: composer:v2
           extensions: mbstring, intl
 
-      - name: Configure composer authentication
-        if: ${{ env.COMPOSER_AUTH_COMMAND }} && ${{ env.COMPOSER_GITHUB_TOKEN }}
-        run: composer config ${{ env.COMPOSER_AUTH_COMMAND }} ${{ env.COMPOSER_GITHUB_TOKEN }}
-        
-      - name: Save auth.json
-        id: auth_json
-        if: ${{ env.COMPOSER_AUTH_COMMAND }} && ${{ env.COMPOSER_GITHUB_TOKEN }}
-        run: echo "output=auth.json" >> $GITHUB_OUTPUT
+#      - name: Configure composer authentication
+#        if: ${{ env.COMPOSER_AUTH_COMMAND }} && ${{ env.COMPOSER_GITHUB_TOKEN }}
+#        run: composer config ${{ env.COMPOSER_AUTH_COMMAND }} ${{ env.COMPOSER_GITHUB_TOKEN }}
+#
+#      - name: Save auth.json
+#        id: auth_json
+#        if: ${{ env.COMPOSER_AUTH_COMMAND }} && ${{ env.COMPOSER_GITHUB_TOKEN }}
+#        run: echo "output=auth.json" >> $GITHUB_OUTPUT
 
       - name: Get composer cache directory
         id: composer-cache
