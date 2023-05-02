@@ -21,6 +21,10 @@ jobs:
     env:
       COMPOSER_AUTH_COMMAND: ${{secrets.COMPOSER_AUTH_COMMAND}}
       COMPOSER_GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      # Uses the global organization secret secrets.COMPOSER_AUTH with genereted 'personal access token'
+      # https://james.brooks.page/blog/installing-private-repositories-using-github-actions
+      COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{secrets.COMPOSER_AUTH}}"} }'
     runs-on: ubuntu-latest
     steps:
       - name: start ssh agent with deployment key
