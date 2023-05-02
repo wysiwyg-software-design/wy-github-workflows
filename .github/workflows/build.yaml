@@ -20,11 +20,6 @@ jobs:
       COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{secrets.COMPOSER_AUTH}}"} }'
     runs-on: ubuntu-latest
     steps:
-      - name: start ssh agent with deployment key
-        uses: webfactory/ssh-agent@v0.8.0
-        with:
-          ssh-private-key: ${{ secrets.REPO_DEPLOY_KEY }}
-
       - name: Install jq
         run: pip install jq
 
