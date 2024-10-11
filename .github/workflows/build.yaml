@@ -20,8 +20,8 @@ jobs:
       COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{secrets.COMPOSER_AUTH}}"} }'
     runs-on: ubuntu-latest
     steps:
-      - name: Install jq
-        run: pip install jq
+      #- name: Install jq
+      #  run: pip install jq
 
       - name: Checkout repository
         uses: actions/checkout@v3
