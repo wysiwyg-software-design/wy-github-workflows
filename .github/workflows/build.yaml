@@ -81,7 +81,7 @@ jobs:
         run: tar -cvf build.tar ${{ inputs.upload }} ${{ steps.auth_json.outputs.output }}
 
       - name: Upload file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build
           path: build.tar
