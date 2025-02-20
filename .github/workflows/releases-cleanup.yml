@@ -1,0 +1,95 @@
+on:
+
+  workflow_call:
+    
+    inputs:
+      
+      remote_host:
+        type: string
+        required: true
+      
+      remote_user:
+        type: string
+        required: true
+
+      remote_homedir:
+          type: string
+          default: '/home/wysiwyg/www'
+      
+      release_limit:
+        type: number
+        default: 6
+
+      project:
+        type: string
+        required: true
+
+      environment:
+        type: string
+        required: true
+
+      runner:
+          type: string
+          default: brabus-github-runner
+          
+jobs:
+  
+  cleanup:
+    
+    runs-on:
+      - self-hosted
+      - ${{ inputs.runner }}
+     
+    environment: ${{ inputs.environment }}
+
+    steps: 
+    
+    - name: Create deploy key
+      run: |
+        echo "${{ secrets.DEPLOY_SSH_KEY }}" > $HOME/deploy_key
+        chmod 600 $HOME/deploy_key
+
+    - name: Cleanup old releases
+      run: |
+    
+        releases=`ssh -i $HOME/deploy_key ${{ inputs.remote_user }}@${{ inputs.remote_host }} "ls -1v ${{ inputs.remote_homedir }}/${{ inputs.project }}/releases"`;
+        echo Releases on Server: $releases
+
+        #push releases into array
+        declare -a arrFiles
+
+        for file in $releases
+        do
+            arrFiles=("${arrFiles[@]}" "$file")
+        done
+
+        #find out older releases (older than $RELEASELIMIT ${{ inputs.release_limit }} will be deleted)
+        let rl=${{ inputs.release_limit }}+1
+        let j=($rl-${#arrFiles[@]})*-1
+
+        echo "Releaselimits: $rl"
+
+        if [ $j -lt 1 ]
+        then
+                echo "No old releases to delete"
+                exit 0;
+        fi
+
+        #delete old releases
+        echo $j releases will be deleted
+        i=0
+        while [ $i -le $j ]
+        do
+
+        #make sure this is really a release number
+        re='^[0-9]+$'
+        if ! [[ ${arrFiles[$i]} =~ $re ]] ; then
+            echo "error: Not a number" >&2; exit 1
+        else
+            echo "Delete release ${arrFiles[$i]}"
+            echo ${{ inputs.remote_user }}@${{ inputs.remote_host }} "rm -rf  ${{ inputs.remote_homedir }}/${{ inputs.project }}/releases/${arrFiles[$i]}"
+            ssh -i $HOME/deploy_key ${{ inputs.remote_user }}@${{ inputs.remote_host }} "rm -rf ${{ inputs.remote_homedir }}/${{ inputs.project }}/releases/${arrFiles[$i]}"
+        fi
+        let i=$i+1
+        done
+   
