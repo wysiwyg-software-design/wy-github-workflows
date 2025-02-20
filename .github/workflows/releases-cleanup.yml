@@ -66,7 +66,7 @@ jobs:
         #find out older releases (older than $RELEASELIMIT ${{ inputs.release_limit }} will be deleted)
         let rl=${{ inputs.release_limit }}+1
         echo "Releaselimits: $rl"
-
+        echo "Array:" ${#arrFiles[@]}
         echo "Neuer Code"
         let j=($rl-${#arrFiles[@]})
         echo "j: $j"
