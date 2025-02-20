@@ -55,13 +55,19 @@ jobs:
         releases=`ssh -i $HOME/deploy_key ${{ inputs.remote_user }}@${{ inputs.remote_host }} "ls -1v ${{ inputs.remote_homedir }}/${{ inputs.project }}/releases"`;
         echo Releases on Server: $releases
 
+        echo "Push"
+        
         #push releases into array
         declare -a arrFiles
-
+        
+        echo "FOR"
+        
         for file in $releases
         do
             arrFiles=("${arrFiles[@]}" "$file")
         done
+
+        echo "FIND"
 
         #find out older releases (older than $RELEASELIMIT ${{ inputs.release_limit }} will be deleted)
         let rl=${{ inputs.release_limit }}+1
