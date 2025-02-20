@@ -67,6 +67,7 @@ jobs:
         let rl=${{ inputs.release_limit }}+1
         echo "Releaselimits: $rl"
 
+        echo "Neuer Code"
         let j=($rl-${#arrFiles[@]})
         echo "j: $j"
 
@@ -87,19 +88,21 @@ jobs:
 
         #delete old releases
         echo $j releases will be deleted
+        
         i=0
+        
         while [ $i -le $j ]
         do
 
-        #make sure this is really a release number
-        re='^[0-9]+$'
-        if ! [[ ${arrFiles[$i]} =~ $re ]] ; then
-            echo "error: Not a number" >&2; exit 1
-        else
-            echo "Delete release ${arrFiles[$i]}"
-            echo ${{ inputs.remote_user }}@${{ inputs.remote_host }} "rm -rf  ${{ inputs.remote_homedir }}/${{ inputs.project }}/releases/${arrFiles[$i]}"
-            ssh -i $HOME/deploy_key ${{ inputs.remote_user }}@${{ inputs.remote_host }} "rm -rf ${{ inputs.remote_homedir }}/${{ inputs.project }}/releases/${arrFiles[$i]}"
-        fi
-        let i=$i+1
+          #make sure this is really a release number
+          re='^[0-9]+$'
+          if ! [[ ${arrFiles[$i]} =~ $re ]] ; then
+              echo "error: Not a number" >&2; exit 1
+          else
+              echo "Delete release ${arrFiles[$i]}"
+              echo ${{ inputs.remote_user }}@${{ inputs.remote_host }} "rm -rf  ${{ inputs.remote_homedir }}/${{ inputs.project }}/releases/${arrFiles[$i]}"
+              ssh -i $HOME/deploy_key ${{ inputs.remote_user }}@${{ inputs.remote_host }} "rm -rf ${{ inputs.remote_homedir }}/${{ inputs.project }}/releases/${arrFiles[$i]}"
+          fi
+          let i=$i+1
         done
    
