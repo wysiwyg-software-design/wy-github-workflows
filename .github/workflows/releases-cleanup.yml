@@ -67,9 +67,18 @@ jobs:
         let rl=${{ inputs.release_limit }}+1
         echo "Releaselimits: $rl"
 
-        let j=($rl-${#arrFiles[@]})*-1
+        let j=($rl-${#arrFiles[@]})
         echo "j: $j"
 
+        if [ $j -eq 0 ]
+        then
+          echo "No old releases to delete"
+          exit 0;
+        else
+          let j=($rl-${#arrFiles[@]})*-1
+        fi
+        echo "j: $j"
+        
         if [ $j -lt 1 ]
         then
                 echo "No old releases to delete"
