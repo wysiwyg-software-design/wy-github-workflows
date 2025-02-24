@@ -67,8 +67,9 @@ jobs:
         let rl=${{ inputs.release_limit }}+1
         echo "Releaselimits: $rl"
         echo "Array:" ${#arrFiles[@]}
-        echo "Neuer Code"
-        let j=($rl-${#arrFiles[@]})
+        
+        #let j=($rl-${#arrFiles[@]})
+        j=$(($rl-${#arrFiles[@]}))
         echo "j: $j"
 
         if [ $j -eq 0 ]
